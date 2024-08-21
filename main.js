@@ -11,6 +11,8 @@ let board = new Board();
 function play() {
     board.reset();
 
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
     let piece = new Piece(ctx);
     piece.draw();
 

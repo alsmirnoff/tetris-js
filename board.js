@@ -1,7 +1,4 @@
 class Board {
-    grid;
-    piece;
-
 	constructor() {
 		this.piece = null;
 	}
