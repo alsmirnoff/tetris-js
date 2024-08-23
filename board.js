@@ -1,5 +1,6 @@
 class Board {
-	constructor() {
+	constructor(ctx) {
+		this.ctx = ctx;
 		this.piece = null;
 	}
 
@@ -37,7 +38,8 @@ class Board {
 	}
 
 	rotate(piece){
-		let p = JSON.parse(JSON.stringify(piece));
+		let p = piece;
+		p.shape = JSON.parse(JSON.stringify(piece.shape));
 
 		for (let y = 0; y < p.shape.length; ++y) {
 			for (let x = 0; x < y; ++x) {
@@ -48,5 +50,45 @@ class Board {
 		p.shape.forEach((row) => row.reverse());
 
 		return p;
+	}
+
+	draw() {
+		this.piece.draw();
+		this.drawBoard();
+	}
+
+	drawBoard() {
+		this.grid.forEach((row, y) => {
+			row.forEach((value, x) => {
+				if (value > 0) {
+					this.ctx.fillStyle = COLORS[value];
+					this.ctx.fillRect(x + 0.05, y + 0.05, 1-0.1, 1-0.1);
+				}
+			});
+		});
+	}
+
+	freeze() {
+		this.piece.shape.forEach((row, y) => {
+			row.forEach((value, x) => {
+				if (value > 0) {
+					this.grid[y + this.piece.y][x + this.piece.x] = value;
+				}
+			});
+		});
+	}
+
+	drop() {
+		let p = moves[KEY.DOWN](this.piece);
+		if (this.valid(p)) {
+			this.piece.move(p);
+		}
+		else {
+			this.freeze();
+			console.table(this.grid);
+
+			this.piece = new Piece(this.ctx);
+			this.piece.setStartPosition();
+		}
 	}
 }

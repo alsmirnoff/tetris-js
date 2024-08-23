@@ -6,17 +6,27 @@ ctx.canvas.height = ROWS * BLOCK_SIZE;
 
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
-let board = new Board();
+let board = new Board(ctx);
+
+const time = { start: 0, elapsed: 0, level: 1000};
+
+function animate(now = 0) {
+    time.elapsed = now - time.start;
+    if(time.elapsed > time.level) {
+        time.start = now;
+        board.drop();
+    }
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    board.draw();
+    requestAnimationFrame(animate);
+}
 
 function play() {
     board.reset();
-
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    
     let piece = new Piece(ctx);
-    piece.draw();
-
     board.piece = piece;
+    board.piece.setStartPosition();
+    animate();
 }
 
 const moves = {
