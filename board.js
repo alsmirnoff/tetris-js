@@ -1,4 +1,6 @@
 class Board {
+	ctx;
+
 	constructor(ctx) {
 		this.ctx = ctx;
 		this.piece = null;
@@ -78,6 +80,15 @@ class Board {
 		});
 	}
 
+	clearLines() {
+		this.grid.forEach((row, y) => {
+			if(row.every(value => value > 0)) {
+				this.grid.splice(y, 1);
+				this.grid.unshift(Array(COLS).fill(0));
+			}
+		})
+	}
+
 	drop() {
 		let p = moves[KEY.DOWN](this.piece);
 		if (this.valid(p)) {
@@ -85,6 +96,7 @@ class Board {
 		}
 		else {
 			this.freeze();
+			this.clearLines();
 			console.table(this.grid);
 
 			this.piece = new Piece(this.ctx);

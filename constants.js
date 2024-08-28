@@ -12,6 +12,7 @@ const KEY = {
 Object.freeze(KEY);
 
 const COLORS = [
+    'none',
     'cyan',
     'blue',
     'orange',
@@ -22,6 +23,7 @@ const COLORS = [
 ];
 
 const SHAPES = [
+    [],
     [
         [0, 0, 0, 0],
         [1, 1, 1, 1],

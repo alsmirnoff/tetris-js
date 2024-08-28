@@ -6,7 +6,25 @@ ctx.canvas.height = ROWS * BLOCK_SIZE;
 
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
+let requestId;
+
+const moves = {
+    [KEY.LEFT]: (p) => ({...p, x: p.x - 1 }),
+    [KEY.RIGHT]: (p) => ({...p, x: p.x + 1 }),
+    [KEY.DOWN]: (p) => ({...p, y: p.y + 1 }),
+    [KEY.SPACE]: (p) => ({...p, y: p.y + 1 }),
+    [KEY.UP]: (p) => board.rotate(p)
+};
+
 let board = new Board(ctx);
+
+function play() {
+    board.reset();
+    let piece = new Piece(ctx);
+    board.piece = piece;
+    board.piece.setStartPosition();
+    animate();
+}
 
 const time = { start: 0, elapsed: 0, level: 1000};
 
@@ -18,24 +36,8 @@ function animate(now = 0) {
     }
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     board.draw();
-    requestAnimationFrame(animate);
+    requestId = requestAnimationFrame(animate);
 }
-
-function play() {
-    board.reset();
-    let piece = new Piece(ctx);
-    board.piece = piece;
-    board.piece.setStartPosition();
-    animate();
-}
-
-const moves = {
-    [KEY.LEFT]: (p) => ({...p, x: p.x - 1 }),
-    [KEY.RIGHT]: (p) => ({...p, x: p.x + 1 }),
-    [KEY.DOWN]: (p) => ({...p, y: p.y + 1 }),
-    [KEY.SPACE]: (p) => ({...p, y: p.y + 1 }),
-    [KEY.UP]: (p) => board.rotate(p)
-};
 
 document.addEventListener('keydown', event => {
     if (moves[event.keyCode]) {

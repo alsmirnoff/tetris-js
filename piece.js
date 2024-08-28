@@ -5,7 +5,7 @@ class Piece {
     }
 
     spawn() {
-        const typeId = this.randomizeTetrominoType(COLORS.length);
+        const typeId = this.randomizeTetrominoType(COLORS.length - 1);
         this.shape = SHAPES[typeId];
         this.color = COLORS[typeId];
         this.x = 0;
@@ -30,9 +30,10 @@ class Piece {
     move(p) {
         this.x = p.x;
         this.y = p.y;
+        this.shape = p.shape;
     }
 
     randomizeTetrominoType(noOfTypes) {
-        return Math.floor(Math.random() * noOfTypes);
+        return Math.floor(Math.random() * noOfTypes + 1);
     }
 }
