@@ -8,6 +8,31 @@ ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
 
 let requestId;
 
+let board = new Board(ctx);
+
+const time = { start: 0, elapsed: 0, level: 1000};
+
+let accountValues = {
+    score: 0,
+    lines: 0,
+    level: 0
+}
+
+function updateAccount(key, value) {
+    let element = document.getElementById(key);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+let account = new Proxy(accountValues, {
+    set: (target, key, value) => {
+        target[key] = value;
+        updateAccount(key, value);
+        return true;
+    }
+});
+
 const moves = {
     [KEY.LEFT]: (p) => ({...p, x: p.x - 1 }),
     [KEY.RIGHT]: (p) => ({...p, x: p.x + 1 }),
@@ -16,17 +41,20 @@ const moves = {
     [KEY.UP]: (p) => board.rotate(p)
 };
 
-let board = new Board(ctx);
-
-function play() {
+function resetGame() {
+    account.score = 0;
+    account.lines = 0;
+    account.level = 0;
+    time.level = LEVEL[account.level];
     board.reset();
     let piece = new Piece(ctx);
     board.piece = piece;
     board.piece.setStartPosition();
+}
+function play() {
+    resetGame();
     animate();
 }
-
-const time = { start: 0, elapsed: 0, level: 1000};
 
 function animate(now = 0) {
     time.elapsed = now - time.start;
@@ -46,11 +74,15 @@ document.addEventListener('keydown', event => {
 
         if (event.keyCode === KEY.SPACE) {
             while (board.valid(p)) {
+                account.score += POINTS.HARD_DROP;
                 board.piece.move(p);
                 p = moves[KEY.DOWN](board.piece);
             }
         } else if (board.valid(p)) {
             board.piece.move(p);
+            if (event.keyCode === KEY.DOWN) {
+                account.score += POINTS.SOFT_DROP;
+            }
         }
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

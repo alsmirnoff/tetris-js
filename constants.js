@@ -11,6 +11,31 @@ const KEY = {
 }
 Object.freeze(KEY);
 
+const POINTS = {
+    SINGLE: 100,
+    DOUBLE: 300,
+    TRIPLE: 500,
+    TETRIS: 800,
+    SOFT_DROP: 1,
+    HARD_DROP: 2
+}
+Object.freeze(POINTS);
+
+const LINES_PER_LEVEL = 10;
+
+const LEVEL = {
+    0: 800,
+    1: 720,
+    2: 630,
+    3: 550,
+    4: 460,
+    5: 380,
+    6: 290,
+    7: 210,
+    8: 120,
+    9: 40
+}
+
 const COLORS = [
     'none',
     'cyan',
