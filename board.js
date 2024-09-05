@@ -10,6 +10,52 @@ class Board {
 	    this.grid = this.getEmptyBoard();
 	}
 
+	draw() {
+		this.piece.draw();
+		this.drawBoard();
+	}
+
+	drop() {
+		let p = moves[KEY.DOWN](this.piece);
+		if (this.valid(p)) {
+			this.piece.move(p);
+		} else {
+			this.freeze();
+			this.clearLines();
+			console.table(this.grid);
+
+			if (this.piece.y === 0) {
+				return false;
+			}
+
+			this.piece = new Piece(this.ctx);
+			this.piece.setStartPosition();
+		}
+
+		return true;
+	}
+
+	clearLines() {
+		let lines = 0;
+		this.grid.forEach((row, y) => {
+			if(row.every(value => value > 0)) {
+				lines++;
+				this.grid.splice(y, 1);
+				this.grid.unshift(Array(COLS).fill(0));
+			}
+		});
+		if (lines > 0) {
+			account.score += this.getClearLinePoints(lines, account.level);
+			account.lines += lines;
+
+			if (account.lines >= LINES_PER_LEVEL) {
+				account.level++;
+				account.lines -= LINES_PER_LEVEL;
+				time.level = LEVEL[account.level];
+			}
+		}
+	}
+
 	getEmptyBoard() {
 	    return Array.from(
 	        {length: ROWS}, () => Array(COLS).fill(0)
@@ -54,11 +100,6 @@ class Board {
 		return p;
 	}
 
-	draw() {
-		this.piece.draw();
-		this.drawBoard();
-	}
-
 	drawBoard() {
 		this.grid.forEach((row, y) => {
 			row.forEach((value, x) => {
@@ -88,41 +129,5 @@ class Board {
 			  	lines === 4 ? POINTS.TETRIS :
 			   	0;
 		return (level + 1) * lineClearPoints;
-	}
-
-	clearLines() {
-		let lines = 0;
-		this.grid.forEach((row, y) => {
-			if(row.every(value => value > 0)) {
-				lines++;
-				this.grid.splice(y, 1);
-				this.grid.unshift(Array(COLS).fill(0));
-			}
-		})
-		if (lines > 0) {
-			account.score += this.getClearLinePoints(lines, account.level);
-			account.lines += lines;
-
-			if (account.lines >= LINES_PER_LEVEL) {
-				account.level++;
-				account.lines -= LINES_PER_LEVEL;
-				time.level = LEVEL[account.level];
-			}
-		}
-	}
-
-	drop() {
-		let p = moves[KEY.DOWN](this.piece);
-		if (this.valid(p)) {
-			this.piece.move(p);
-		}
-		else {
-			this.freeze();
-			this.clearLines();
-			console.table(this.grid);
-
-			this.piece = new Piece(this.ctx);
-			this.piece.setStartPosition();
-		}
 	}
 }

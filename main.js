@@ -60,7 +60,11 @@ function animate(now = 0) {
     time.elapsed = now - time.start;
     if(time.elapsed > time.level) {
         time.start = now;
-        board.drop();
+
+        if (!board.drop()) {
+            gameOver();
+            return;
+        }
     }
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     board.draw();
@@ -89,3 +93,12 @@ document.addEventListener('keydown', event => {
         board.piece.draw();
     }
 });
+
+function gameOver() {
+    cancelAnimationFrame(requestId);
+    this.ctx.fillStyle = 'black';
+    this.ctx.fillRect(1, 3, 8, 1.2);
+    this.ctx.font = '1px Arial';
+    this.ctx.fillStyle = 'red';
+    this.ctx.fillText('GAME OVER', 1.8, 4);
+}
