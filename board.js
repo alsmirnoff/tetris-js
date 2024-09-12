@@ -1,13 +1,29 @@
 class Board {
 	ctx;
 
-	constructor(ctx) {
+	constructor(ctx, ctxNext) {
 		this.ctx = ctx;
+		this.ctxNext = ctxNext;
 		this.piece = null;
+		this.next = null;
 	}
 
 	reset() {
 	    this.grid = this.getEmptyBoard();
+		this.piece = new Piece(this.ctx);
+		this.piece.setStartPosition();
+		this.getNewPiece();
+	}
+
+	getNewPiece() {
+		this.next = new Piece(this.ctxNext);
+		this.ctxNext.clearRect(
+			0,
+			0,
+			this.ctxNext.canvas.width,
+			this.ctxNext.canvas.height
+		);
+		this.next.draw();
 	}
 
 	draw() {
@@ -28,8 +44,10 @@ class Board {
 				return false;
 			}
 
-			this.piece = new Piece(this.ctx);
+			this.piece = this.next;
+			this.piece.ctx = this.ctx;
 			this.piece.setStartPosition();
+			this.getNewPiece();
 		}
 
 		return true;

@@ -1,14 +1,20 @@
 const canvas = document.getElementById('board');
 const ctx = canvas.getContext('2d');
+const canvasNext = document.getElementById('next');
+const ctxNext = canvasNext.getContext('2d');
 
 ctx.canvas.width = COLS * BLOCK_SIZE;
 ctx.canvas.height = ROWS * BLOCK_SIZE;
-
 ctx.scale(BLOCK_SIZE, BLOCK_SIZE);
+
+ctxNext.canvas.width = 4 * BLOCK_SIZE;
+ctxNext.canvas.height = 4 * BLOCK_SIZE;
+ctxNext.scale(BLOCK_SIZE, BLOCK_SIZE);
+
 
 let requestId;
 
-let board = new Board(ctx);
+let board = new Board(ctx, ctxNext);
 
 const time = { start: 0, elapsed: 0, level: 1000};
 
@@ -96,7 +102,7 @@ document.addEventListener('keydown', event => {
 
 function gameOver() {
     cancelAnimationFrame(requestId);
-    
+
     ctx.fillStyle = 'black';
     ctx.fillRect(1, 3, 8, 1.2);
     ctx.font = '1px Arial';
