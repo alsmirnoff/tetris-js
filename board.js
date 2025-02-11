@@ -80,8 +80,8 @@ class Board {
 	    );
 	}
 
-	insideWalls(x) {
-		return x >= 0 && x < COLS;
+	insideWalls(x, y) {
+		return x >= 0 && x <= COLS && y <= ROWS;
 	}
 
 	aboveFloor(y) {
@@ -98,14 +98,13 @@ class Board {
 				let x = p.x + dx;
 				let y = p.y + dy;
 				return value === 0 || 
-					(this.insideWalls(x) && this.aboveFloor(y) && this.notOccupied(x, y));
+					(this.insideWalls(x, y) && this.aboveFloor(y) && this.notOccupied(x, y));
 			});
 		});
 	}
 
 	rotate(piece){
-		let p = piece;
-		p.shape = JSON.parse(JSON.stringify(piece.shape));
+		let p = JSON.parse(JSON.stringify(piece));
 
 		for (let y = 0; y < p.shape.length; ++y) {
 			for (let x = 0; x < y; ++x) {
